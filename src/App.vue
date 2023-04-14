@@ -1,75 +1,54 @@
 <template>
+  <!-- view -->
   <div class="container">
-    <h1>오늘의 할일 (좀 하자 ...)</h1>
+    <h1>오늘의 할일</h1>
+    <TodoBasicForm @add-todo="onAdd" />
+    <!-- TodoBasicForm에 있는 add-todo를 연결 -->
 
-    <form action="#" class="d-flex" @:submit.prevent="onSubmit">
-    <!-- <form action="#" class="d-flex" @:click="onSubmit"> -->
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="일정 추가하기" v-model="todo">
-      <!-- <button class="btn btn-primary" @:click="onSubmit">추가</button> -->
-      <button class="btn btn-primary" type="submit">추가</button>
-      <!-- submit.prevent // type="submit" ==e.preventdefault -->
-      </div>
-    </form>
-    <div class="card">
-      <div class="card-body p-2">
-        {{todos[0].subject}}
-      </div>
-    </div>
-    <!-- <div class="card">
-      <div class="card-body p-2">
-        <span v-for="todo in todos" :key="todo.id">{{todo.subject}}</span>
-      </div>
-    </div> -->
-    <div class="card" v-for="todo in todos" :key="todo.id">
-      <div class="card-body p-2">
-        <span >{{todo.subject}}</span>
-      </div>
-    </div>
+    <TodoList :todos="todos" />
+    {{ TodoList }}
+    <div v-if="!todos.length">등록된 일정이 없습니다.</div>
+
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
+import TodoBasicForm from './components/TodoBasicForm.vue';
+import TodoList from './components/TodoList.vue'
 
 export default {
-  setup() {
-//ref로 (감싸야 vue스크립트와 인스턴트간 통신가능 )는 원시값 / reactive는 배열,객체값
-  const todo = ref("");
-  let todos = ref([
-        {
-          id:"1",
-          subject:"리액트복습",
-        },
-        {
-          id:"2",
-          subject:"냥빨",
-        }
-  ]);  
-    const onSubmit = () => {
-      console.log(todo.value);
-      //전개연산자로 써도되고
-      //[...todos]
-      //(하는중)todos.value = [...todos, { id: "1", subject: todo.value }];
-      //push 라는 함수 사용해도됨 (배열뒤에 값을 추가함)
-      todos.value.push({
-        id:Date.now,
-        subject:todo.value,
-        }
-      )
-    };
+  components: { TodoBasicForm, TodoList },
 
-    return {
-      todo,
-      onSubmit,
-      todos,
-    };
+  setup() {
+    const todos = ref([]);
+
+    const todoStyle = {
+      color: 'gray',
+      'text-decoration': 'line-through',
+
+    }
+    const deleteTodo = (data) => {
+      console.log(data);
+      todos.value.splice(data, 1)
+    }
+    const onAdd = (todo) => {
+      // console.log(data);
+      todos.value.push(todo)
+    }
+
+
+    return { onAdd, todoStyle, deleteTodo, todos };
   },
 };
 </script>
-
 <style>
 .red {
   color: red;
+}
+
+.todo {
+  color: gray;
+  text-decoration: line-through;
 }
 </style>
