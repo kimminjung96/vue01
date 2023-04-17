@@ -25,17 +25,17 @@ export default {
             required: true,
         },
     },
-    emits: ["toggle-todo,delete-todo"],
+    emits: ["toggle-todo", "delete-todo"],
     setup(props, { emit }) {
         const toggleTodo = (index) => {
-            console.log(index);
             emit("toggle-todo", index);
         };
         const deleteTodo = (index) => {
             emit("delete-todo", index);
         };
         return {
-            toggleTodo, deleteTodo
+            toggleTodo,
+            deleteTodo,
         };
     },
 };

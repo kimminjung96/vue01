@@ -21,7 +21,7 @@ export default {
     const toggle = ref(false);
     const searchText = ref("");
     const filteredTodos = computed(() => {
-      //입력만 되면 ture
+      //입력만되면 ture
       if (searchText.value === "") {
         return todos.value.filter((todo) => {
           console.log(todos.value, todo);
