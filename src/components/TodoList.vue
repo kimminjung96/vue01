@@ -1,45 +1,44 @@
 <template>
-    <div class="card" v-for="i in todos" :key="i.id">
+    <div class="card">
         <div class="card-body p-2">
-            <div class="d-flex">
+            <div class="d-flex" v-for="(i, index) in todos" :key="i.id">
                 <div class="form-check flex-grow-1">
-                    <label class="form-check-label" :class="{ tolist: i.complated }">
-                        <input v-model="i.complated" type="checkbox" class="form-check-input">
-                        {{ i.subject }} </label>
+                    <label class="form-check-label">
+                        {{ i.subject }}
+                        <input type="checkbox" class="form-check-input" :value="todos.completed"
+                            @change="toggleTodo(index)" />
+                    </label>
                 </div>
-                <div><button class="btn btn-danger btn-sm" @click="deleteTodo(data)">삭제</button></div>
+                <div>
+                    <button class="btn btn-danger btn-sm" @click="deleteTodo(index)">삭제</button>
+                </div>
             </div>
         </div>
     </div>
 </template>
-
+  
 <script>
-
 export default {
     props: {
-        tidis: {
+        todos: {
             type: Array,
-            require: true
-        }
-    }
-    //setup(props, { emit }) {
-    /*         const todos = ref([]);
-    
-    
-            const todoStyle = {
-                color: 'gray',
-                'text-decoration': 'line-through',
-    
-            }
-            const deleteTodo = (data) => {
-                console.log(data);
-                todos.value.splice(data, 1)
-            }
-            return { todoStyle, deleteTodo, todos } */
-
-    //}
-
-}
+            required: true,
+        },
+    },
+    emits: ["toggle-todo,delete-todo"],
+    setup(props, { emit }) {
+        const toggleTodo = (index) => {
+            console.log(index);
+            emit("toggle-todo", index);
+        };
+        const deleteTodo = (index) => {
+            emit("delete-todo", index);
+        };
+        return {
+            toggleTodo, deleteTodo
+        };
+    },
+};
 </script>
-
+  
 <style></style>

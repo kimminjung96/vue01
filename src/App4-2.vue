@@ -31,10 +31,10 @@
           <!-- .form-check>label.form-check-label+input.form-check-input -->
           <div class="form-check flex-grow-1">
             <!-- 클래스와 바인딩하려면 setup안에 작성되어야 함 -->
-            <!-- <label class="form-check-label" :class={todo:i.complated}> //class로 바인딩하는것 => todo라는 클래스를 i.complated 에 바인딩 하겠다. -->
-            <label class="form-check-label" :style="i.complated ? todoStyle : {}">
+            <!-- <label class="form-check-label" :class={todo:i.completed}> //class로 바인딩하는것 => todo라는 클래스를 i.completed 에 바인딩 하겠다. -->
+            <label class="form-check-label" :style="i.completed ? todoStyle : {}">
               <!-- input 태그에는 checked 속성이 들어있어서 checked가 되면 true, 아니면 false -->
-              <input v-model="i.complated" type="checkbox" class="form-check-input">
+              <input v-model="i.completed" type="checkbox" class="form-check-input">
               <!-- v-model 연결 -->
               {{ i.subject }} </label>
           </div>
@@ -78,7 +78,7 @@ export default {
         todos.value.push({
           id: Date.now(),
           subject: todo.value,
-          complated: false,
+          completed: false,
         })
         /* 초기화 */
         todo.value = "";

@@ -27,12 +27,12 @@ export default {
         emit("add-todo", {
           id: Date.now(),
           subject: todo.value,
-          complated: false,
+          completed: false,
         })
         /*  todos.value.push({
            id: Date.now(),
            subject: todo.value,
-           complated: false,
+           completed: false,
          }) */
         todo.value = "";
         errMsg.value = false;
