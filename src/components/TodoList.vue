@@ -3,7 +3,7 @@
         <div class="card-body p-2">
             <div class="d-flex" v-for="(i, index) in todos" :key="i.id">
                 <div class="form-check flex-grow-1">
-                    <label class="form-check-label">
+                    <label class="form-check-label" :class="{ todo: i.completed }">
                         {{ i.subject }}
                         <input type="checkbox" class="form-check-input" :value="todos.completed"
                             @change="toggleTodo(index)" />
