@@ -6,6 +6,18 @@
     <div style="color:red">{{ error }}</div>
     <div v-if="!todos.length">등록된 일정이 없습니다</div>
     <TodoList :todos="filteredTodos" @toggle-todo="toggleTodo" @delete-todo="deleteTodo" />
+    <!-- <nav aria-label="Page navigation example"> =>접근성레이블 : 접근성 -->
+    <nav>
+      <ul class="pagination justify-content-center">
+        <li v-if="currentPage !== 1" class="page-item"><a class="page-link" href="#"
+            @click="getTodos(currentPage - 1)">Previous</a></li>
+        <li v-for="page in numberOfPages" class="page-item" :key="page" :class="currentPage === page ? `active` : ``"><a
+            class="page-link" @click="getTodos(page)">{{ page }}</a></li>
+        <li v-if="currentPage !== numberOfPages" class="page-item"><a class="page-link" href="#"
+            @click="getTodos(currentPage + 1)">Next</a></li>
+      </ul>
+    </nav>
+    <!-- {{ numberOfPages }} -->
   </div>
 </template>
 
@@ -25,6 +37,17 @@ export default {
     const toggle = ref(false);
     const searchText = ref("");
     const todos = ref([]);
+    const totalTodos = ref(0);
+    /* 모든데이터 */
+    const limit = 5;
+    /* 보일데이터 */
+    const currentPage = ref(1);
+    /* 선택된 페이지 */
+
+    const numberOfPages = computed(() => {
+      return Math.ceil(totalTodos.value / limit)
+    });
+
 
     const filteredTodos = computed(() => {
       console.log(searchText.value);
@@ -38,11 +61,17 @@ export default {
       return todos.value;
     });
 
-    const getTodos = () => {
-      axios.get("http://localhost:8080/todos")
+
+    const getTodos = (page = currentPage.value) => { //page 버튼주소
+      currentPage.value = page; //age.value 페이지주소
+      axios.get(`http://localhost:8080/todos?_page=${page}&_limit=${limit}`)
         .then((res) => {
-          // console.log("이것은 todos.value입니다", res);
-          todos.value = res.data.todos
+          /* 객체의 속성에 특수문자가 포함되면 대괄호로 [] */
+          console.log("이것은 todos.value입니다", res.headers["x-total-count"]);
+          /* https://yamoo9.github.io/axios/guide/response-schema.html 응답시키마 */
+          totalTodos.value = res.headers["x-total-count"];
+          todos.value = res.data;
+
         })
         .catch((err) => { console.log(err); error.value = "getTodos 일시적으로 오류발생." })
     }
@@ -54,12 +83,12 @@ export default {
         subject: todo.subject,
         completed: todo.completed,
       }).then((res) => {
-        /*
-        console.log(res.data.todos);  
+
+        console.log(res.data.todos);
         todos.value.push(res.data.todos);
-         getTodos(); */
-        console.log(res.data.result);
-        todos.value.push(res.data.result);
+        getTodos();
+        /* console.log(res.data.result);
+        todos.value.push(res.data.result); */
         //두개 사용시 배열로
         /* return [
           console.log(res.data,"😀😀"),
@@ -93,8 +122,8 @@ export default {
       const id = index;
       axios.post("http://localhost:8080/todos/" + id)
         .then((res) => {
-          console.log("toggleTodo", res,toggle.value),
-          getTodos();
+          console.log("toggleTodo", res, toggle.value),
+            getTodos();
         })
         .catch((err) => console.log(err));
     };
@@ -113,6 +142,8 @@ export default {
 
     //화면에 나타나야하는것만 return
     return {
+      numberOfPages,
+      currentPage,
       filteredTodos,
       searchText,
       onSubmit,
@@ -121,7 +152,7 @@ export default {
       getTodos,
       deleteTodo,
       toggleTodo,
-      error
+      error,
     };
   },
 };
@@ -131,5 +162,9 @@ export default {
 .todo {
   color: gray;
   text-decoration: line-through;
+}
+
+.page-item a {
+  cursor: pointer;
 }
 </style>
